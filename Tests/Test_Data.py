@@ -1,5 +1,4 @@
 import Data
-import pytest
 
 
 def test_buildPointClass():
