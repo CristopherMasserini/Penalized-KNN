@@ -41,3 +41,23 @@ def test_modelTaxiDistance(a, b, expected):
     model = Model.KNNPenalized(0)
     result = model.taxi_distance(a, b)
     assert result == expected
+
+
+@pytest.mark.parametrize("dist_type",
+                         ['euclidean', 'taxi'])
+def test_modelClosestPointCheck(dist_type):
+    model = Model.KNNPenalized(5)
+    point = [0, 0]
+    all_points = [[1, 1], [1, 2], [3, 5], [6, 7], [9, 10], [0, 1]]
+    closest_point = model.closest_point_check(point, all_points, dist_type)
+    assert closest_point == ([0, 1], 1.0)
+
+
+def test_closestNPoints():
+    model = Model.KNNPenalized(5)
+    point = [0, 0]
+    all_points = [[1, 1], [1, 2], [3, 5], [6, 7], [9, 10], [0, 1]]
+    nearest = model.closest_n_points(3, point, all_points, 'taxi')
+    assert nearest == {0: {'coord': [0, 1], 'dist': 1},
+                       1: {'coord': [1, 1], 'dist': 2},
+                       2: {'coord': [1, 2], 'dist': 3}}
