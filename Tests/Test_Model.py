@@ -1,6 +1,8 @@
+import Data
 import Model
 import pytest
 import math
+from Data import Point
 
 
 def test_buildModelClass():
@@ -20,7 +22,7 @@ def test_modelPenalties():
 @pytest.mark.parametrize("a,b,expected",
                          [([1, 2], [1, 2], 0),
                           ([1, 2], [1, 2, 3], None),
-                          ([0, 0], [6, 6], 6*math.sqrt(2)),
+                          ([0, 0], [6, 6], 6 * math.sqrt(2)),
                           ([1, 2], [4, 6], 5),
                           ([1, 2, 3], [4, 6, 8], math.sqrt(50)),
                           ])
@@ -46,18 +48,62 @@ def test_modelTaxiDistance(a, b, expected):
 @pytest.mark.parametrize("dist_type",
                          ['euclidean', 'taxi'])
 def test_modelClosestPointCheck(dist_type):
-    model = Model.KNNPenalized(5)
-    point = [0, 0]
-    all_points = [[1, 1], [1, 2], [3, 5], [6, 7], [9, 10], [0, 1]]
+    model = Model.KNNPenalized(3)
+    point = Point([0, 0])
+    all_points = [Point([1, 1], 'A'),
+                  Point([1, 2], 'B'),
+                  Point([3, 5], 'C'),
+                  Point([0, 1], 'D')]
     closest_point = model.closest_point_check(point, all_points, dist_type)
-    assert closest_point == ([0, 1], 1.0)
+    assert closest_point[0].location == [0, 1]
+    assert closest_point[1] == 1.0
+    assert closest_point[0].label == 'D'
 
 
 def test_closestNPoints():
-    model = Model.KNNPenalized(5)
-    point = [0, 0]
-    all_points = [[1, 1], [1, 2], [3, 5], [6, 7], [9, 10], [0, 1]]
+    model = Model.KNNPenalized(3)
+    point = Point([0, 0], 'A')
+    all_points = [Point([1, 1], 'A'),
+                  Point([1, 2], 'B'),
+                  Point([3, 5], 'C'),
+                  Point([0, 1], 'D')]
     nearest = model.closest_n_points(3, point, all_points, 'taxi')
-    assert nearest == {0: {'coord': [0, 1], 'dist': 1},
-                       1: {'coord': [1, 1], 'dist': 2},
-                       2: {'coord': [1, 2], 'dist': 3}}
+    assert nearest == {0: {'coord': [0, 1], 'dist': 1, 'label': 'D'},
+                       1: {'coord': [1, 1], 'dist': 2, 'label': 'A'},
+                       2: {'coord': [1, 2], 'dist': 3, 'label': 'B'}}
+
+
+def test_classifyPoint():
+    model = Model.KNNPenalized(4)
+    point = Point([0, 0], None)
+    all_points = [Point([1, 1], 'A'),
+                  Point([1, 4], 'B'),
+                  Point([3, 5], 'C'),
+                  Point([0, 1], 'D'),
+                  Point([-1, 2], 'A'),
+                  Point([-1, -1], 'A'),
+                  Point([1, -3], 'D')
+                  ]
+    classification = model.classify_point(point, all_points, 'taxi')
+    assert classification == 'A'
+
+
+def test_classifyPoints():
+    model = Model.KNNPenalized(4)
+
+    point1 = Point([0, 0], None)
+    point2 = Point([5, 4], None)
+    input_points = Data.DataSet([point1, point2])
+
+    dataset = Data.DataSet([Point([1, 1], 'A'),
+                            Point([1, 4], 'B'),
+                            Point([3, 5], 'C'),
+                            Point([0, 1], 'D'),
+                            Point([-1, 2], 'A'),
+                            Point([-1, -1], 'A'),
+                            Point([1, -3], 'D')
+                            ])
+
+    classified_points = model.classify_points(input_points, dataset, 'taxi')
+    assert classified_points.points[0].label == 'A'
+    assert classified_points.points[1].label == 'C'
