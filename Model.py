@@ -90,3 +90,6 @@ class KNNPenalized:
 
         return input_points
 
+    def test_model(self, all_data: DataSet, split_size):
+        X = all_data.locations
+        y = all_data.labels
