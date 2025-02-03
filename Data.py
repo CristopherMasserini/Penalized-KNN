@@ -15,8 +15,11 @@ class TestTrainPoint(Point):
 
 
 class DataSet:
-    def __init__(self, points):
-        self.points = points
+    def __init__(self, points=None):
+        self.points = []
+        if points:
+            self.points = points
+
         self.locations = []
         self.labels = []
         self.test_set = []
@@ -27,8 +30,19 @@ class DataSet:
             self.locations.append(point.location)
             self.labels.append(point.label)
 
-    def dataframe_to_dataset(self):
-        pass
+    def dataframe_to_dataset(self, file_location, labelColumn):
+        df = pd.read_csv(file_location)
+        labels = df.loc[:, labelColumn]
+        cols = [col for col in df.columns if col != labelColumn]
+
+        for i in range(0, len(labels)):
+            entry_values = []
+            for col in cols:
+                location_i = df.loc[i, col]
+                entry_values.append(location_i)
+
+            point = Point(entry_values, labels[i])
+            self.points.append(point)
 
     def split_dataset(self, split_size):
         for point in self.points:
