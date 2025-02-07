@@ -7,6 +7,13 @@ def test_buildPointClass():
     assert point.label == 'Class1'
 
 
+def test_buildTestTrainPointClass():
+    point = Data.TestTrainPoint((5, 2), 'Class1')
+    assert point.test_label is None
+    point.test_label = 'TESTCLASS'
+    assert point.test_label == 'TESTCLASS'
+
+
 def test_buildDataSetClass():
     point1 = Data.Point((5, 2), 'Class1')
     point2 = Data.Point((6, 9), 'Class2')
@@ -36,4 +43,8 @@ def test_splitDataset():
     assert len(dataset.train_set) > 0
 
 
-
+def test_dataframeToDataset():
+    file = 'Test_Datafile.csv'
+    dataset = Data.DataSet()
+    dataset.dataframe_to_dataset(file, 'Label')
+    assert len(dataset.points) == 4
