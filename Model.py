@@ -1,5 +1,7 @@
 import math
-from Data import Point, DataSet
+from sklearn import metrics
+import random
+from Data import Point, TestTrainPoint, DataSet
 
 
 class KNNPenalized:
@@ -82,14 +84,30 @@ class KNNPenalized:
 
         return max(label_scores, key=label_scores.get)
 
-    def classify_points(self, input_points: DataSet, dataset: DataSet, dist_type='euclidean'):
+    def classify_points(self, input_points: DataSet, dataset: DataSet, dist_type='euclidean', testing=False):
         for point in input_points.points:
             all_points = dataset.points
             label_classified = self.classify_point(point, all_points, dist_type)
-            point.label = label_classified
+            if not testing:
+                point.label = label_classified
+            else:
+                point.test_label = label_classified
 
         return input_points
 
-    def test_model(self, all_data: DataSet, split_size):
-        X = all_data.locations
-        y = all_data.labels
+    def split_dataset(self, dataset, split_size):
+        test_set = DataSet()
+        train_set = DataSet()
+        for point in dataset.points:
+            if random.random() <= split_size:
+                point_test = TestTrainPoint(point.location, point.label)
+                test_set.points(point_test)
+            else:
+                train_set.points(point)
+
+        return test_set, train_set
+
+    def test_model(self, all_data: DataSet, split_size, dist_type='euclidean'):
+        test_set, train_set = self.split_dataset(all_data, split_size)
+        test_points_labeled = self.classify_points(test_set, train_set, dist_type=dist_type, testing=True)
+        print(test_points_labeled)

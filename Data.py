@@ -22,8 +22,6 @@ class DataSet:
 
         self.locations = []
         self.labels = []
-        self.test_set = []
-        self.train_set = []
 
     def location_label_split(self):
         for point in self.points:
@@ -43,12 +41,4 @@ class DataSet:
 
             point = Point(entry_values, labels[i])
             self.points.append(point)
-
-    def split_dataset(self, split_size):
-        for point in self.points:
-            if random.random() <= split_size:
-                point_test = TestTrainPoint(point.location, point.label)
-                self.test_set.append(point_test)
-            else:
-                self.train_set.append(point)
 

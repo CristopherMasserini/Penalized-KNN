@@ -101,9 +101,28 @@ def test_classifyPoints():
                             Point([0, 1], 'D'),
                             Point([-1, 2], 'A'),
                             Point([-1, -1], 'A'),
-                            Point([1, -3], 'D')
+                            Point([1, -3], 'D'),
                             ])
 
     classified_points = model.classify_points(input_points, dataset, 'taxi')
     assert classified_points.points[0].label == 'A'
     assert classified_points.points[1].label == 'C'
+
+
+def test_testModel():
+    model = Model.KNNPenalized(4)
+
+    dataset = Data.DataSet([Point([1, 1], 'A'),
+                            Point([1, 4], 'B'),
+                            Point([3, 5], 'C'),
+                            Point([0, 1], 'D'),
+                            Point([-1, 2], 'A'),
+                            Point([-1, -1], 'A'),
+                            Point([1, -3], 'D'),
+                            Point([0, 0], 'B'),
+                            Point([5, 4], 'C')
+                            ])
+
+    classified_points = model.test_model(dataset, 0.2)
+
+
