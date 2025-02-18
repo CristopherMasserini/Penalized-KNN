@@ -109,6 +109,19 @@ def test_classifyPoints():
     assert classified_points.points[1].label == 'C'
 
 
+def test_splitDataset():
+    model = Model.KNNPenalized(4)
+
+    point1 = Data.Point((5, 2), 'Class1')
+    point2 = Data.Point((6, 9), 'Class2')
+    point3 = Data.Point((-1, -3), 'Class3')
+    point4 = Data.Point((-9, 10), 'Class4')
+    dataset = Data.DataSet([point1, point2, point3, point4])
+    train_set, test_set = model.split_dataset(dataset, 0.5)
+    assert len(test_set.points) > 0
+    assert len(train_set.points) > 0
+
+
 def test_testModel():
     model = Model.KNNPenalized(4)
 
@@ -124,5 +137,4 @@ def test_testModel():
                             ])
 
     classified_points = model.test_model(dataset, 0.2)
-
-
+    assert classified_points.points[0].test_label is not None

@@ -32,17 +32,6 @@ def test_locationLabelSplit():
     assert dataset.labels == ['Class1', 'Class2', 'Class3']
 
 
-def test_splitDataset():
-    point1 = Data.Point((5, 2), 'Class1')
-    point2 = Data.Point((6, 9), 'Class2')
-    point3 = Data.Point((-1, -3), 'Class3')
-    point4 = Data.Point((-9, 10), 'Class4')
-    dataset = Data.DataSet([point1, point2, point3, point4])
-    dataset.split_dataset(0.5)
-    assert len(dataset.test_set) > 0
-    assert len(dataset.train_set) > 0
-
-
 def test_dataframeToDataset():
     file = 'Test_Datafile.csv'
     dataset = Data.DataSet()

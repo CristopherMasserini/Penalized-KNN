@@ -101,13 +101,22 @@ class KNNPenalized:
         for point in dataset.points:
             if random.random() <= split_size:
                 point_test = TestTrainPoint(point.location, point.label)
-                test_set.points(point_test)
+                test_set.points.append(point_test)
             else:
-                train_set.points(point)
+                train_set.points.append(point)
 
         return test_set, train_set
 
-    def test_model(self, all_data: DataSet, split_size, dist_type='euclidean'):
+    def test_model(self, all_data: DataSet, split_size, label_names, dist_type='euclidean'):
         test_set, train_set = self.split_dataset(all_data, split_size)
         test_points_labeled = self.classify_points(test_set, train_set, dist_type=dist_type, testing=True)
-        print(test_points_labeled)
+
+        label_given = []
+        label_pred = []
+
+        for point in test_points_labeled.points:
+            label_pred.append(point.test_label)
+            label_given.append(point.label)
+
+        print(metrics.classification_report(label_given, label_pred, target_names=label_names))
+        return test_points_labeled
