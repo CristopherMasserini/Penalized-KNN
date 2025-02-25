@@ -1,3 +1,4 @@
 # Init file
-import Data
-import Model
+from . import Data
+from . import Model
+__all__ = ['Data', 'Model']

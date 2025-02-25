@@ -1,7 +1,7 @@
 import math
 from sklearn import metrics
 import random
-from Data import Point, TestTrainPoint, DataSet
+from .Data import Point, TestTrainPoint, DataSet
 
 
 class KNNPenalized:
