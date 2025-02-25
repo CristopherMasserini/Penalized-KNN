@@ -1,8 +1,8 @@
-import Data
+import Files
 import Model
 import pytest
 import math
-from Data import Point
+from Files import Point
 
 
 def test_buildModelClass():
@@ -93,16 +93,16 @@ def test_classifyPoints():
 
     point1 = Point([0, 0], None)
     point2 = Point([5, 4], None)
-    input_points = Data.DataSet([point1, point2])
+    input_points = Files.DataSet([point1, point2])
 
-    dataset = Data.DataSet([Point([1, 1], 'A'),
-                            Point([1, 4], 'B'),
-                            Point([3, 5], 'C'),
-                            Point([0, 1], 'D'),
-                            Point([-1, 2], 'A'),
-                            Point([-1, -1], 'A'),
-                            Point([1, -3], 'D'),
-                            ])
+    dataset = Files.DataSet([Point([1, 1], 'A'),
+                             Point([1, 4], 'B'),
+                             Point([3, 5], 'C'),
+                             Point([0, 1], 'D'),
+                             Point([-1, 2], 'A'),
+                             Point([-1, -1], 'A'),
+                             Point([1, -3], 'D'),
+                             ])
 
     classified_points = model.classify_points(input_points, dataset, 'taxi')
     assert classified_points.points[0].label == 'A'
@@ -112,11 +112,11 @@ def test_classifyPoints():
 def test_splitDataset():
     model = Model.KNNPenalized(4)
 
-    point1 = Data.Point((5, 2), 'Class1')
-    point2 = Data.Point((6, 9), 'Class2')
-    point3 = Data.Point((-1, -3), 'Class3')
-    point4 = Data.Point((-9, 10), 'Class4')
-    dataset = Data.DataSet([point1, point2, point3, point4])
+    point1 = Files.Point((5, 2), 'Class1')
+    point2 = Files.Point((6, 9), 'Class2')
+    point3 = Files.Point((-1, -3), 'Class3')
+    point4 = Files.Point((-9, 10), 'Class4')
+    dataset = Files.DataSet([point1, point2, point3, point4])
     train_set, test_set = model.split_dataset(dataset, 0.5)
     assert len(test_set.points) > 0
     assert len(train_set.points) > 0
@@ -125,16 +125,16 @@ def test_splitDataset():
 def test_testModel():
     model = Model.KNNPenalized(4)
 
-    dataset = Data.DataSet([Point([1, 1], 'A'),
-                            Point([1, 4], 'B'),
-                            Point([3, 5], 'C'),
-                            Point([0, 1], 'D'),
-                            Point([-1, 2], 'A'),
-                            Point([-1, -1], 'A'),
-                            Point([1, -3], 'D'),
-                            Point([0, 0], 'B'),
-                            Point([5, 4], 'C')
-                            ])
+    dataset = Files.DataSet([Point([1, 1], 'A'),
+                             Point([1, 4], 'B'),
+                             Point([3, 5], 'C'),
+                             Point([0, 1], 'D'),
+                             Point([-1, 2], 'A'),
+                             Point([-1, -1], 'A'),
+                             Point([1, -3], 'D'),
+                             Point([0, 0], 'B'),
+                             Point([5, 4], 'C')
+                             ])
 
     classified_points = model.test_model(dataset, 0.2)
     assert classified_points.points[0].test_label is not None
